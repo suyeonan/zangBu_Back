@@ -73,7 +73,8 @@ public class JusoClient {
             JsonNode juso = root.path("results").path("juso");
             if (juso.isArray() && juso.size() > 0) {
                 // 최상위 1건에서 "roadAddrPart1" 추출
-                return juso.get(0).path("roadAddrPart1").asText(null);
+//                return juso.get(0).path("roadAddrPart1").asText(null);
+                return juso.get(0).path("zipNo").asText(null);
             }
         } catch (Exception e) {
             e.printStackTrace();

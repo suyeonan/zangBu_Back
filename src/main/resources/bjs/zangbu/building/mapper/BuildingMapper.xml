@@ -190,6 +190,7 @@
         SELECT
             b.building_id AS buildingId,
             b.price,
+            b.deposit,
             b.building_name AS buildingName,
             b.size,
             MIN(il.image_url) AS imageUrl,
@@ -213,6 +214,7 @@
         SELECT
             b.building_id AS buildingId,
             b.price,
+            b.deposit,
             b.building_name AS buildingName,
             b.size,
             MIN(il.image_url) AS imageUrl,
@@ -236,6 +238,7 @@
         SELECT
             b.building_id AS buildingId,
             b.price,
+            b.deposit,
             b.building_name AS buildingName,
             b.size,
             MIN(il.image_url) AS imageUrl,
