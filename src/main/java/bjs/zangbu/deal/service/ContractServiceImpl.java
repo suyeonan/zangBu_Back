@@ -74,6 +74,7 @@ public class ContractServiceImpl implements ContractService {
         EstateRegistrationRequest request = EstateRegistrationRequest.addTwoRequest(addr, member);
         // codef에서 응답 가져오기
         String rawResponse = codefService.realEstateRegistrationLeader(request);
+        log.info("rawResponse: " + rawResponse);
         // pdf dto 파싱로직
         EstateRegistrationResponse dto = CodefConverter.parseDataToDto(
                 rawResponse, EstateRegistrationResponse.class);
@@ -87,7 +88,7 @@ public class ContractServiceImpl implements ContractService {
         // (추가)mongodb에 나머지 json 파싱해서 저장 -> 분석리포트를 위함
         documentToMongoService.saveJson(memberId, buildingId, docType, dto);
         /* 6) ncp 업로드 */
-        String key = "estate-Register/" + "/" + memberId + "/" + buildingId + ".pdf";
+        String key = "estate-Register" + "/" + memberId + "/" + buildingId + ".pdf";
         String url = binaryUploaderService.putPdfObject(BUCKET_NAME,key,pdfBytes);
 
         documentToMongoService.updatePdfMeta(memberId, buildingId,
@@ -117,6 +118,7 @@ public class ContractServiceImpl implements ContractService {
 
         // PDF 바이트 추출
         byte[] pdfBytes = PdfUtil.decodePdfBytes(dto.getResOriGinalData());
+        log.info("pdfBytes = " + pdfBytes);
         if (pdfBytes == null || pdfBytes.length == 0) {
             log.warn("PDF bytes empty: buildingId={}, type={}", buildingId, docType);
             // 필요시: 예외/복구 로직
@@ -124,7 +126,7 @@ public class ContractServiceImpl implements ContractService {
         // (추가)mongodb에 나머지 json 파싱해서 저장 -> 분석리포트를 위함
         documentToMongoService.saveJson(memberId, buildingId, docType, dto);
         /* ncp 업로드*/
-        String key  = "building-register/" + "/" + memberId + "/" + buildingId + ".pdf";
+        String key  = "building-register" + "/" + memberId + "/" + buildingId + ".pdf";
         String url = binaryUploaderService.putPdfObject(BUCKET_NAME,key,pdfBytes);
 
         documentToMongoService.updatePdfMeta(memberId, buildingId,

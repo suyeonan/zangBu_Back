@@ -6,7 +6,14 @@ import bjs.zangbu.codef.dto.request.CodefRequest.AddressRequest;
 import bjs.zangbu.deal.dto.request.BuildingRegisterRequest;
 import bjs.zangbu.deal.dto.request.EstateRegistrationRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * CODEF 통합 본인확인/부동산/증명서 조회 API 서비스 인터페이스
@@ -36,7 +43,7 @@ public interface CodefService {
          * @throws InterruptedException
          */
         String realEstateRegistrationLeader(EstateRegistrationRequest request)
-                        throws UnsupportedEncodingException, JsonProcessingException, InterruptedException;
+                throws UnsupportedEncodingException, JsonProcessingException, InterruptedException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException;
 
         /**
          * 3차 인증(보안문자/캡차 등) 처리

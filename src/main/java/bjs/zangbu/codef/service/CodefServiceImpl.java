@@ -18,10 +18,18 @@ import io.codef.api.EasyCodef;
 import io.codef.api.EasyCodefMessageConstant;
 import io.codef.api.EasyCodefServiceType;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import io.codef.api.EasyCodefUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +66,8 @@ public class CodefServiceImpl implements CodefService {
   public void init() {
     codef = codefEncryption.getCodefInstance();
   }
-
+  @Value("${codef.public_key}")
+  private String publicKey;
   // codef 결제 관련
   @Value("${codef.ePrepayNo}")
   private String ePrepayNo;
@@ -106,7 +115,7 @@ public class CodefServiceImpl implements CodefService {
    */
   @Override
   public String realEstateRegistrationLeader(EstateRegistrationRequest request)
-      throws UnsupportedEncodingException, JsonProcessingException, InterruptedException {
+          throws UnsupportedEncodingException, JsonProcessingException, InterruptedException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
     String password = request.getBirth();
     password = password.substring(2);
     // RSA 암호화
@@ -116,18 +125,20 @@ public class CodefServiceImpl implements CodefService {
     } catch (Exception e) {
       throw new RuntimeException("RSA 암호화 실패", e);
     }
-    System.out.println("encryptedPassword = " + encryptedPassword); // 지워야됌
+    log.info("encryptedPassword = " + encryptedPassword); // 지워야됌
 
     // 건물번호 로직 todo: 항상 주소 마지막에 띄어쓰기 번호 되어있어야 함 ex. 오부자로 14
     String address_tmp = request.getAddress();
     String[] parts = address_tmp.split(" ");
     String bN = parts[parts.length - 1];
+    String tmp = "1111";
 
     // 등기부 등본 발급 파라미터 생성 (실제 값은 request에서 추출)
     HashMap<String, Object> parameterMap = new HashMap<>();
     parameterMap.put("organization", "0002");
     parameterMap.put("phoneNo", request.getPhone());
-    parameterMap.put("password", encryptedPassword);
+//    parameterMap.put("password", encryptedPassword);
+    parameterMap.put("password", EasyCodefUtil.encryptRSA("1111",codef.getPublicKey()));
     parameterMap.put("inquiryType", "3");
     parameterMap.put("realtyType", "1");
     parameterMap.put("addr_sido", request.getSido());
@@ -148,8 +159,9 @@ public class CodefServiceImpl implements CodefService {
     String productUrl = "/v1/kr/public/ck/real-estate-register/status";
 
     // 2. 1차 인증 요청
+    System.out.println("parameterMap: " + parameterMap);
     String firstResponse = codef.requestProduct(productUrl, EasyCodefServiceType.DEMO, parameterMap);
-
+    log.info("firstResponse: " + firstResponse);
     return firstResponse;
   }
 
