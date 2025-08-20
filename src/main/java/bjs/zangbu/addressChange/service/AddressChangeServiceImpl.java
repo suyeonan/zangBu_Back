@@ -87,7 +87,8 @@ public class AddressChangeServiceImpl implements AddressChangeService {
                 String resNumber = AddrUtil.extractDongHo(original).orElse(null);
 
                 // 4-3) 지번→도로명 변환 (정책 기준일 이전만)
-                String saveAddr = q1; // 변환 실패 시 전처리된 원문을 저장
+                //String saveAddr = q1; // 변환 실패 시 전처리된 원문을 저장
+                /*
                 if (t.moveIn.toLocalDate().isBefore(CUTOFF)) {
                     // 1차: 동·호 포함 키워드로 조회 (roadAddrPart1만 사용)
                     String roadPart1 = jusoClient.searchBestRoadAddr1(q1);
@@ -101,13 +102,28 @@ public class AddressChangeServiceImpl implements AddressChangeService {
                     if (roadPart1 != null && !roadPart1.isBlank()) {
                         saveAddr = roadPart1; // 동·호는 res_number로 분리 보관
                     }
+                }*/
+                // 4-3) (변경) 날짜 무관: 항상 Juso API로 zipNo 조회
+                // 현재 JusoClient.searchBestRoadAddr1()가 zipNo를 반환하도록 구현되어 있다고 가정
+                String zipNo = jusoClient.searchZipNo(q1);
+                // 2차: 결과 없으면 동·호 제거 후 재시도
+                if (zipNo == null || zipNo.isBlank()) {
+                    String q2 = AddrUtil.removeDongHo(q1);
+                    if (q2 != null && !q2.isBlank()) {
+                        zipNo = jusoClient.searchZipNo(q2);
+                    }
+                }
+                // 3차: 그래도 실패하면 스킵(정책에 맞게 조정 가능)
+                if (zipNo == null || zipNo.isBlank()) {
+                    log.warn("[SKIP] zipNo not found. memberId={}, addr='{}'", memberId, original);
+                    continue;
                 }
 
                 // 4-4) VO 생성 (테이블 DDL에 맞춘 필드)
                 AddressChange vo = new AddressChange(
                         null,                 // addressChangeId (AUTO_INCREMENT)
                         resNumber,            // res_number (동·호)
-                        saveAddr,             // res_user_addr (도로명 또는 전처리 원문) -> 우편번호로 바꿈
+                        zipNo,                // res_user_addr (도로명 또는 전처리 원문) -> 우편번호로 바꿈
                         t.moveIn,             // res_move_in_date (DATETIME)
                         memberId              // member_id (VARCHAR(36))
                 );

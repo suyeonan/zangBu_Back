@@ -73,7 +73,41 @@ public class JusoClient {
             JsonNode juso = root.path("results").path("juso");
             if (juso.isArray() && juso.size() > 0) {
                 // 최상위 1건에서 "roadAddrPart1" 추출
-//                return juso.get(0).path("roadAddrPart1").asText(null);
+                return juso.get(0).path("roadAddrPart1").asText(null);
+//                return juso.get(0).path("zipNo").asText(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String searchZipNo(String keyword) {
+        if (confmKey == null || confmKey.isBlank()) {
+            throw new IllegalStateException("juso.serviceKey 미설정");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
+
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("confmKey", confmKey);
+        form.add("currentPage", "1");
+        form.add("countPerPage", "10");
+        form.add("keyword", keyword);
+        form.add("resultType", "json");
+        form.add("hstryYn", "Y");
+        form.add("firstSort", "road");
+        form.add("addInfoYn", "Y");
+
+        ResponseEntity<String> rsp =
+                restTemplate.postForEntity(endpoint, new HttpEntity<>(form, headers), String.class);
+        if (!rsp.getStatusCode().is2xxSuccessful() || rsp.getBody() == null) return null;
+
+        try {
+            JsonNode root = OM.readTree(rsp.getBody());
+            JsonNode juso = root.path("results").path("juso");
+            if (juso.isArray() && juso.size() > 0) {
                 return juso.get(0).path("zipNo").asText(null);
             }
         } catch (Exception e) {

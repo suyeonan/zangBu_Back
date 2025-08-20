@@ -55,6 +55,6 @@
         FROM address_change ac
                  JOIN complex_list cl ON cl.complex_id = #{complexId}
         WHERE ac.member_id = #{memberId}
-          AND TRIM(ac.res_user_addr) = TRIM(cl.zonecode)
+          AND ac.res_user_addr = cl.zonecode
     </select>
 </mapper>
