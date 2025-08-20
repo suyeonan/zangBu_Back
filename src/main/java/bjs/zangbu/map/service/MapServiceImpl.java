@@ -1,9 +1,14 @@
 package bjs.zangbu.map.service;
 
+import bjs.zangbu.building.mapper.BuildingMapper;
+import bjs.zangbu.building.vo.Building;
+import bjs.zangbu.complexList.mapper.ComplexListMapper;
+import bjs.zangbu.complexList.vo.ComplexList;
 import bjs.zangbu.map.dto.request.MapCategoryRequest;
 import bjs.zangbu.map.dto.request.MapFilterRequest;
 import bjs.zangbu.map.dto.request.MapListRequest;
 import bjs.zangbu.map.dto.request.MapSearchRequest;
+import bjs.zangbu.map.dto.response.AptDetailResponse;
 import bjs.zangbu.map.dto.response.MapCategoryResponse;
 import bjs.zangbu.map.dto.response.MapListResponse;
 import bjs.zangbu.map.dto.response.MapSearchResponse;
@@ -31,6 +36,10 @@ public class MapServiceImpl implements MapService {
 
     // 외부 API 호출용 클라이언트 (RestTemplate 래핑)
     private final KakaoMapClient kakaoClient;
+    
+    // Building과 ComplexList 정보를 조회하기 위한 Mapper
+    private final BuildingMapper buildingMapper;
+    private final ComplexListMapper complexListMapper;
 
     @Override
     public List<MapListResponse> getAllBuildingLocations() {
@@ -90,5 +99,27 @@ public class MapServiceImpl implements MapService {
                     return new MapListResponse(building.getBuildingId(), building.getBuildingName(), fullAddress);
                 })
                 .toList();
+    }
+
+    // 아파트 상세 정보 조회 (매매 종류, 면적, 상세 주소)
+    @Override
+    public AptDetailResponse getAptDetail(Long buildingId) {
+        // Building 정보 조회
+        Building building = buildingMapper.getBuildingById(buildingId);
+        if (building == null) {
+            throw new IllegalArgumentException("해당 매물을 찾을 수 없습니다. buildingId: " + buildingId);
+        }
+
+        // ComplexList 정보 조회
+        ComplexList complexList = complexListMapper.getComplexListByBuildingId(buildingId);
+        if (complexList == null) {
+            throw new IllegalArgumentException("해당 단지 정보를 찾을 수 없습니다. buildingId: " + buildingId);
+        }
+
+        return new AptDetailResponse(
+                building.getSaleType().toString(),  // 매매 종류
+                building.getSize(),                 // 면적
+                complexList.getDong()              // 상세 주소 (동 정보)
+        );
     }
 }

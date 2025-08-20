@@ -4,6 +4,7 @@ import bjs.zangbu.map.dto.request.MapCategoryRequest;
 import bjs.zangbu.map.dto.request.MapFilterRequest;
 import bjs.zangbu.map.dto.request.MapListRequest;
 import bjs.zangbu.map.dto.request.MapSearchRequest;
+import bjs.zangbu.map.dto.response.AptDetailResponse;
 import bjs.zangbu.map.dto.response.MapCategoryResponse;
 import bjs.zangbu.map.dto.response.MapListResponse;
 import bjs.zangbu.map.dto.response.MapSearchResponse;
@@ -73,6 +74,20 @@ public class MapController {
         } catch (Exception e) {
             log.error("카테고리 검색 중 오류 발생", e);
             return ResponseEntity.status(500).body("카테고리 검색 중 오류가 발생했습니다.");
+        }
+    }
+
+    // 아파트 상세 정보 조회 (매매 종류, 면적, 상세 주소)
+    @GetMapping("/apt/{buildingId}")
+    public ResponseEntity<?> getAptDetail(@PathVariable Long buildingId) {
+        try {
+            AptDetailResponse result = mapService.getAptDetail(buildingId);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("아파트 상세 정보 조회 중 오류 발생", e);
+            return ResponseEntity.status(500).body("아파트 상세 정보를 불러오는데 실패했습니다.");
         }
     }
 }

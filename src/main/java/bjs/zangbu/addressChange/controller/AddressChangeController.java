@@ -40,14 +40,14 @@ public class AddressChangeController {
             return ResponseEntity.badRequest().build();
         }
         if (addressChangeMapper.existsByMemberId(memberId) > 0) {
-            return ResponseEntity.ok("이미 값이 존재함");
+            return ResponseEntity.ok("true");
         }
         try {
             List<ResRegisterCertResponse> items =
                     addressChangeService.generateAddressChange(memberId);
 
             // 비즈니스 정책에 따라, 결과가 비어도 200 OK로 리스트 반환
-            return ResponseEntity.ok("초본 api -> 데이터 베이스에 저장 성공");
+            return ResponseEntity.ok("true");
 
         } catch (Exception e) {
             log.error("importFromResidentAbstract failed. memberId={}, err={}",
