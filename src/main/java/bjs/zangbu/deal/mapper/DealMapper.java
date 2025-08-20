@@ -3,8 +3,10 @@ package bjs.zangbu.deal.mapper;
 import bjs.zangbu.deal.dto.join.DealDocumentInfo;
 import bjs.zangbu.deal.dto.join.DealWithChatRoom;
 import bjs.zangbu.deal.dto.join.DealWithSaleType;
+import bjs.zangbu.deal.dto.request.AddressRequest;
 import bjs.zangbu.deal.dto.request.DealRequest.Status;
 import bjs.zangbu.deal.dto.request.EstateRegistrationRequest;
+import bjs.zangbu.deal.dto.request.MemberRequest;
 import bjs.zangbu.deal.dto.response.DealResponse.CreateResult;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -85,7 +87,8 @@ public interface DealMapper {
    * @return 건축물대장 정보 DTO
    */
   DealDocumentInfo getDocumentInfo(@Param("buildingId") Long buildingId);
-
+  AddressRequest getAddressRequest(@Param("buildingId") Long buildingId);
+  MemberRequest getMemberRequest(@Param("memberId") String memberId);
   /**
    * 표준계약서 XML 코드 조회
    *

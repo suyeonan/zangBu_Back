@@ -41,4 +41,18 @@ public class BuildingRegisterRequest {
                 .ho(info.getHo())
                 .build();
     }
+    public static BuildingRegisterRequest addTwoRequest(AddressRequest address, MemberRequest member){
+        return BuildingRegisterRequest.builder()
+                .buildingId(1L)
+                .userName(member.getUserName())
+                .identity(member.getIdentity())
+                .birthDate(member.getBirthDate())
+                .phoneNo(member.getPhoneNo())
+                .address(address.getAddress())
+                .zipCode(address.getZipcode())
+                .telecom(member.getTelecom())
+                .dong(address.getDong())
+                .ho(address.getHo())
+                .build();
+    }
 }

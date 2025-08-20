@@ -7,6 +7,7 @@ import bjs.zangbu.deal.dto.request.DealRequest.Status;
 import bjs.zangbu.deal.dto.response.DealResponse;
 import bjs.zangbu.deal.dto.response.DealResponse.Download;
 import bjs.zangbu.deal.dto.response.DealResponse.Notice;
+import bjs.zangbu.deal.dto.response.DealResponse.NoticeBefore;
 import bjs.zangbu.deal.dto.response.DealWaitingListResponse.WaitingList;
 import bjs.zangbu.deal.service.ContractService;
 import bjs.zangbu.deal.service.DealService;
@@ -76,6 +77,34 @@ public class DealController {
       @PathVariable Long dealId) {
     try {
       Notice response = dealService.getNotice(dealId);
+      return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("안내 페이지 요청에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 거래 전 안내 페이지 이동 (chatRoomId 없는 버전)
+   *
+   * @param buildingId 거래 ID
+   * @return 거래 안내 정보
+   */
+  @ApiOperation(
+      value = "거래 안내 페이지 이동",
+      notes = "거래 전 건물 ID를 기반으로 안내 정보를 반환합니다.",
+      response = Notice.class
+  )
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "안내 정보 반환 성공"),
+      @ApiResponse(code = 400, message = "안내 정보 요청 실패")
+  })
+  @GetMapping("/notice/before/{buildingId}")
+  public ResponseEntity<?> moveNoticePageBefore(
+      @ApiParam(value = "건물 ID", example = "123")
+      @PathVariable Long buildingId) {
+    try {
+      NoticeBefore response = dealService.getNoticeBefore(buildingId);
       return ResponseEntity.status(HttpStatus.OK).body(response);
 
     } catch (Exception e) {

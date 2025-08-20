@@ -16,6 +16,41 @@ import lombok.NoArgsConstructor;
 public class DealResponse {
 
   /**
+   * 거래 전 안내 정보 응답 DTO(chatRoomId X)
+   *
+   * <p>/deal/notice/{buildingId} API 응답</p>
+   */
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @ApiModel(description = "거래 전 안내 정보 응답 DTO")
+  public static class NoticeBefore {
+
+    @ApiModelProperty(value = "건물 ID", example = "1001")
+    private Long buildingId;
+
+    @ApiModelProperty(value = "건물 이름", example = "신촌 한울타리 아파트")
+    private String buildingName;
+
+    @ApiModelProperty(value = "건물 간단 설명", example = "교통 좋은 역세권 아파트")
+    private String infoBuilding;
+
+    /**
+     * {@link Building} → {@link Notice} 변환
+     *
+     * @param buildVO 건물 VO
+     * @return 변환된 Notice DTO
+     */
+    public static NoticeBefore toDto(Building buildVO) {
+      return new NoticeBefore(
+          buildVO.getBuildingId(),
+          buildVO.getBuildingName(),
+          buildVO.getInfoBuilding()
+      );
+    }
+  }
+
+  /**
    * 거래 전 안내 정보 응답 DTO
    *
    * <p>/deal/notice/{buildingId} API 응답</p>

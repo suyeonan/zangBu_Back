@@ -7,14 +7,15 @@ import bjs.zangbu.deal.dto.join.DealWithChatRoom;
 import bjs.zangbu.deal.dto.request.DealRequest.Status;
 import bjs.zangbu.deal.dto.response.DealResponse.CreateResult;
 import bjs.zangbu.deal.dto.response.DealResponse.Notice;
+import bjs.zangbu.deal.dto.response.DealResponse.NoticeBefore;
 import bjs.zangbu.deal.dto.response.DealWaitingListResponse.WaitingList;
 import bjs.zangbu.deal.mapper.DealMapper;
 import bjs.zangbu.deal.vo.DealEnum;
 import bjs.zangbu.imageList.service.ImageListService;
 import bjs.zangbu.notification.service.NotificationService;
 import com.github.pagehelper.PageInfo;
-
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -198,6 +199,14 @@ public class DealServiceImpl implements DealService {
     CreateResult result = new CreateResult();
     dealMapper.createDeal(chatRoomId, result);
     return result.getDealId();
+  }
+
+  @Override
+  public NoticeBefore getNoticeBefore(Long buildingId) {
+    // Building 조회
+    Building buildVO = buildingMapper.getBuildingById(buildingId);
+
+    return NoticeBefore.toDto(buildVO);
   }
 
 

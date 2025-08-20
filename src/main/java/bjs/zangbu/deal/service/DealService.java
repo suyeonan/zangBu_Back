@@ -2,6 +2,7 @@ package bjs.zangbu.deal.service;
 
 import bjs.zangbu.deal.dto.request.DealRequest.Status;
 import bjs.zangbu.deal.dto.response.DealResponse.Notice;
+import bjs.zangbu.deal.dto.response.DealResponse.NoticeBefore;
 import bjs.zangbu.deal.dto.response.DealWaitingListResponse.WaitingList;
 import bjs.zangbu.deal.vo.DealEnum;
 
@@ -72,4 +73,12 @@ public interface DealService {
    * @return 생성된 거래 식별 ID
    */
   Long createDeal(String chatRoomId);
+
+  /**
+   * 거래 전 안내 조회(chatRoomId X)
+   *
+   * @param buildingId 매물 식별 ID
+   * @return 거래 전 안내 정보 DTO
+   */
+  NoticeBefore getNoticeBefore(Long buildingId);
 }

@@ -26,8 +26,8 @@ import org.springframework.web.cors.CorsConfiguration;
 @Configuration
 @EnableWebSecurity
 @Log4j2
-@MapperScan(basePackages = { "bjs.zangbu.security.account.mapper" })
-@ComponentScan(basePackages = { "bjs.zangbu.security" })
+@MapperScan(basePackages = {"bjs.zangbu.security.account.mapper"})
+@ComponentScan(basePackages = {"bjs.zangbu.security"})
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -78,7 +78,9 @@ public class SecurityConfig {
               "http://localhost:5173",
               "http://localhost:8080",
               "http://localhost:61613",
-              "http://localhost:6379"));
+              "http://localhost:6379"
+
+          ));
           config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
           config.setAllowedHeaders(List.of("*"));
           config.setAllowCredentials(true);

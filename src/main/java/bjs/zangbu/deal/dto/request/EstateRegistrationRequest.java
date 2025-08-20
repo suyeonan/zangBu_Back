@@ -24,4 +24,18 @@ public class EstateRegistrationRequest {
   private String ho;
   private String roadName; // 도로명, todo : complexList 테이블에 추가해야함
 
+  public static EstateRegistrationRequest addTwoRequest(AddressRequest addr, MemberRequest member) {
+    return EstateRegistrationRequest.builder()
+            .buildingId(1L)
+            .phone(member.getPhoneNo())
+            .birth(member.getMemberId())
+            .sido(addr.getSido())
+            .address(addr.getAddress())
+            .sigungu(addr.getSigungu())
+            .dong(addr.getDong())
+            .ho(addr.getHo())
+            .roadName(addr.getRoadName())
+            .build();
+  }
+
 }

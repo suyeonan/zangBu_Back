@@ -5,8 +5,10 @@ import bjs.zangbu.codef.service.CodefService;
 import bjs.zangbu.codef.service.CodefTwoFactorService;
 import bjs.zangbu.deal.dto.join.DealDocumentInfo;
 import bjs.zangbu.deal.dto.join.DealWithSaleType;
+import bjs.zangbu.deal.dto.request.AddressRequest;
 import bjs.zangbu.deal.dto.request.BuildingRegisterRequest;
 import bjs.zangbu.deal.dto.request.EstateRegistrationRequest;
+import bjs.zangbu.deal.dto.request.MemberRequest;
 import bjs.zangbu.deal.dto.response.BuildingRegisterResponse;
 import bjs.zangbu.deal.dto.response.DealResponse;
 import bjs.zangbu.deal.dto.response.EstateRegistrationResponse;
@@ -66,7 +68,10 @@ public class ContractServiceImpl implements ContractService {
         final DocumentType docType = DocumentType.ESTATE;
 
         //DB에서 데이터 가져와서 request 생성
-        EstateRegistrationRequest request = dealMapper.getEstateRegistrationRequest(buildingId);
+        //EstateRegistrationRequest request = dealMapper.getEstateRegistrationRequest(buildingId);
+        AddressRequest addr = dealMapper.getAddressRequest(buildingId);
+        MemberRequest member = dealMapper.getMemberRequest(memberId);
+        EstateRegistrationRequest request = EstateRegistrationRequest.addTwoRequest(addr, member);
         // codef에서 응답 가져오기
         String rawResponse = codefService.realEstateRegistrationLeader(request);
         // pdf dto 파싱로직
@@ -96,11 +101,16 @@ public class ContractServiceImpl implements ContractService {
 
         final DocumentType docType = DocumentType.BUILDING_REGISTER;
         // 1) DB 조회
-        DealDocumentInfo deal = dealMapper.getDocumentInfo(buildingId);
+//        DealDocumentInfo deal = dealMapper.getDocumentInfo(buildingId);
         // request json 형식에 맞게 파싱
-        BuildingRegisterRequest request = BuildingRegisterRequest.from(deal);
+//        BuildingRegisterRequest request = BuildingRegisterRequest.from(deal);
+        AddressRequest addr = dealMapper.getAddressRequest(buildingId);
+        MemberRequest member = dealMapper.getMemberRequest(memberId);
+        BuildingRegisterRequest request = BuildingRegisterRequest.addTwoRequest(addr, member);
+        System.out.println("request = " + request);
         // 1차·2차가 섞여 있을 수 있는 응답(rawResponse)
         String rawResponse = codefTwoFactorService.generalBuildingLeader(request);
+        System.out.println("rawResponse = " + rawResponse);
         // dto로 파싱
         BuildingRegisterResponse dto =
                 CodefConverter.parseDataToDto(rawResponse, BuildingRegisterResponse.class);

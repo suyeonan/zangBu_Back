@@ -237,6 +237,35 @@
            JOIN complex_list cl ON cl.complex_id = b.complex_id
     WHERE b.building_id = #{buildingId}
   </select>
+
+    <select id="getAddressRequest"
+            parameterType="long"
+            resultType="bjs.zangbu.deal.dto.request.AddressRequest">
+        SELECT cl.address  AS address,
+               cl.dong     AS dong,
+               cl.ho       AS ho,
+               cl.zonecode AS zipcode,
+               cl.sido     AS sido,
+               cl.roadName AS roadName,
+               cl.sigungu  As sigungu
+        FROM building b
+                 JOIN complex_list cl ON cl.complex_id = b.complex_id
+        WHERE b.building_id = #{buildingId} LIMIT 1
+    </select>
+    <select id="getMemberRequest"
+            parameterType="string"
+            resultType="bjs.zangbu.deal.dto.request.MemberRequest">
+        SELECT m.member_id AS memberId,
+               m.name      AS userName,
+               m.identity,
+               m.birth     AS birthDate,
+               m.phone     AS phoneNo,
+               m.telecom   AS telecom
+        FROM member m
+        WHERE m.member_id = #{memberId} LIMIT 1
+    </select>
+
+
   <select id="getRoomIdByDealId" resultType="java.lang.String">
     SELECT chat_room_id
     FROM deal
