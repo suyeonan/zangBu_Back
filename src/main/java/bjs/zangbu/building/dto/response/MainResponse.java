@@ -55,6 +55,8 @@ public class MainResponse {
         private Long buildingId;
         /** 매물 가격 */
         private Integer price;
+
+        private Integer deposit;
         /** 매물 이름 */
         private String buildingName;
         /** 매물 이미지 URL */

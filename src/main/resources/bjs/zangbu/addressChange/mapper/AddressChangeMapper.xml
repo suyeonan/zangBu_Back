@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="bjs.zangbu.addressChange.mapper.AddressChangeMapper">
-        <select id="getRegisterCertRequest" resultType="bjs.zangbu.addressChange.dto.request.ResRegisterCertRequest">
+    <select id="getRegisterCertRequest" resultType="bjs.zangbu.addressChange.dto.request.ResRegisterCertRequest">
         select m.birth,
                m.identity,
                m.phone,
@@ -19,11 +19,10 @@
             keyProperty="addressChangeId">
         INSERT INTO address_change
             (member_id, res_number, res_user_addr, res_move_in_date)
-        VALUES
-            (#{memberId,jdbcType=VARCHAR},
-             #{resNumber,jdbcType=VARCHAR},
-             #{resUserAddr,jdbcType=VARCHAR},
-             #{resMoveInDate,jdbcType=TIMESTAMP})
+        VALUES (#{memberId,jdbcType=VARCHAR},
+                #{resNumber,jdbcType=VARCHAR},
+                #{resUserAddr,jdbcType=VARCHAR},
+                #{resMoveInDate,jdbcType=TIMESTAMP})
     </insert>
     <select id="existsByMemberAddrDate" resultType="int">
         SELECT COUNT(1)
@@ -32,7 +31,7 @@
           AND res_user_addr = #{resUserAddr,jdbcType=VARCHAR}
           AND res_move_in_date = #{resMoveInDate,jdbcType=TIMESTAMP}
     </select>
-    
+
     <!-- 사용자의 주민등록초본에 기록된 모든 주소 조회 -->
     <select id="selectUserAddresses" resultType="java.lang.String">
         SELECT DISTINCT res_user_addr
@@ -48,5 +47,14 @@
         SELECT COUNT(1)
         FROM address_change
         WHERE member_id = #{memberId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- zonecode 기준 매칭 -->
+    <select id="countLivedByMemberAndComplexZone" resultType="int">
+        SELECT COUNT(1)
+        FROM address_change ac
+                 JOIN complex_list cl ON cl.complex_id = #{complexId}
+        WHERE ac.member_id = #{memberId}
+          AND TRIM(ac.res_user_addr) = TRIM(cl.zonecode)
     </select>
 </mapper>

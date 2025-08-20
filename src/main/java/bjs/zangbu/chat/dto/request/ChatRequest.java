@@ -3,6 +3,7 @@ package bjs.zangbu.chat.dto.request;
 import bjs.zangbu.chat.vo.ChatMessage;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,6 @@ public class ChatRequest {
     //컨트롤러 작성해보고 dto작성 없이 @RequestParam으로 할지 생각해보기
   }
 
-  //  /pub/chat.message
   @Getter
   @NoArgsConstructor
   @AllArgsConstructor
@@ -35,11 +35,16 @@ public class ChatRequest {
   public static class SendMessageRequest {
 
     @ApiModelProperty(value = "전송할 메시지 내용", example = "안녕", required = true)
+    @JsonProperty("message")
     private String message;
     @ApiModelProperty(value = "채팅방 ID", example = "b10011-1111-2222-3333-444455556675", required = true)
+    @JsonProperty("chatRoomId")
     private String chatRoomId;
+    @ApiModelProperty(value = "보낸 사용자 ID", required = true)
+    @JsonProperty("senderId")
+    private String senderId;
 
-    public ChatMessage toEntity(String senderId, LocalDateTime createdAt) {
+    public ChatMessage toEntity(LocalDateTime createdAt) {
       return ChatMessage.builder()
               .chatRoomId(chatRoomId)
               .senderId(senderId)

@@ -25,6 +25,7 @@ import org.springframework.web.servlet.view.JstlView;
     "bjs.zangbu.addressChange.controller",
     "bjs.zangbu.building.controller",
     "bjs.zangbu.chat.controller",
+        "bjs.zangbu.chat.config",
     "bjs.zangbu.codef.controller",
     "bjs.zangbu.deal.controller",
     "bjs.zangbu.documentReport.controller",

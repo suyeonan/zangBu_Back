@@ -107,7 +107,7 @@ public class AddressChangeServiceImpl implements AddressChangeService {
                 AddressChange vo = new AddressChange(
                         null,                 // addressChangeId (AUTO_INCREMENT)
                         resNumber,            // res_number (동·호)
-                        saveAddr,             // res_user_addr (도로명 또는 전처리 원문)
+                        saveAddr,             // res_user_addr (도로명 또는 전처리 원문) -> 우편번호로 바꿈
                         t.moveIn,             // res_move_in_date (DATETIME)
                         memberId              // member_id (VARCHAR(36))
                 );
@@ -204,6 +204,9 @@ public class AddressChangeServiceImpl implements AddressChangeService {
         return result;
     }
 
-
+    @Override
+    public boolean hasLivedAtComplex(String memberId, long complexId) {
+        return addressChangeMapper.countLivedByMemberAndComplexZone(memberId, complexId) > 0;
+    }
 
 }
