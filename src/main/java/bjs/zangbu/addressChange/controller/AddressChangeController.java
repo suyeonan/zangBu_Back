@@ -57,11 +57,11 @@ public class AddressChangeController {
         }
     }
 
-    @PostMapping("/find/{complexId}")
+    @GetMapping("/find/{buildingId}")
     public ResponseEntity<?> findAddressChange(
-            @AuthenticationPrincipal CustomUser customUser, @PathVariable long complexId) {
+            @AuthenticationPrincipal CustomUser customUser, @PathVariable long buildingId) {
         String memberId = customUser.getMember().getMemberId();
-        boolean lived = addressChangeService.hasLivedAtComplex(memberId, complexId);
+        boolean lived = addressChangeService.hasLivedAtBuilding(memberId, buildingId);
         return ResponseEntity.ok(lived);
     }
 }

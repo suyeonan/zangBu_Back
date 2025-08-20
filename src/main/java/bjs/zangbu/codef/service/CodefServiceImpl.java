@@ -327,10 +327,12 @@ public class CodefServiceImpl implements CodefService {
       Map<String, Object> estateDetail = null;
       if (estateListData != null && !estateListData.isEmpty()) {
         String targetComplexNo = complex.getComplexNo();
-        estateDetail = estateListData.stream()
-            .filter(infoMap -> targetComplexNo.equals(infoMap.get("commComplexNo")))
-            .findFirst()
-            .orElse(null);
+        if (targetComplexNo != null && !targetComplexNo.isEmpty()) {
+          estateDetail = estateListData.stream()
+              .filter(infoMap -> targetComplexNo.equals(infoMap.get("commComplexNo")))
+              .findFirst()
+              .orElse(null);
+        }
       }
 
       // 3. 시세 정보 조회 (market-price-information)

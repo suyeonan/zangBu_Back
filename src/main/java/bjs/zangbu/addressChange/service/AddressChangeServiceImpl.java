@@ -14,8 +14,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -221,8 +219,8 @@ public class AddressChangeServiceImpl implements AddressChangeService {
     }
 
     @Override
-    public boolean hasLivedAtComplex(String memberId, long complexId) {
-        return addressChangeMapper.countLivedByMemberAndComplexZone(memberId, complexId) > 0;
+    public boolean hasLivedAtBuilding(String memberId, long buildingId) {
+        return addressChangeMapper.countLivedByMemberAndBuildingZone(memberId, buildingId) > 0;
     }
 
 }

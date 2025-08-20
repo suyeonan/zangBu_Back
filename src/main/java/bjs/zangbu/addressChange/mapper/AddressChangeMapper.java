@@ -31,8 +31,8 @@ public interface AddressChangeMapper {
     int existsByMemberId(String memberId);
 
     /** 멤버가 특정 단지의 zonecode에 거주한 적이 있는지 확인 */
-    int countLivedByMemberAndComplexZone(
+    int countLivedByMemberAndBuildingZone(
             @Param("memberId") String memberId,
-            @Param("complexId") long complexId
+            @Param("buildngId") long buildingId
     );
 }

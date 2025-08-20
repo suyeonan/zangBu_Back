@@ -253,6 +253,12 @@
             LIMIT 3
     </select>
 
+    <select id="selectBuildingNameById" parameterType="long" resultType="string">
+        SELECT building_name
+        FROM building
+        WHERE building_id = #{buildingId}
+    </select>
+
     <!--
         보증금 조회
         @param buildingId

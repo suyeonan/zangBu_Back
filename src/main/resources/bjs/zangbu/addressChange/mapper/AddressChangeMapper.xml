@@ -50,11 +50,14 @@
     </select>
 
     <!-- zonecode 기준 매칭 -->
-    <select id="countLivedByMemberAndComplexZone" resultType="int">
+    <select id="countLivedByMemberAndBuildingZone" resultType="int">
         SELECT COUNT(1)
         FROM address_change ac
-                 JOIN complex_list cl ON cl.complex_id = #{complexId}
+                 JOIN building b ON b.building_id = #{buildingId}
+                 JOIN complex_list cl ON cl.complex_id = b.complex_id
         WHERE ac.member_id = #{memberId}
-          AND ac.res_user_addr = cl.zonecode
+          AND ac.res_user_addr IS NOT NULL
+          AND cl.zonecode IS NOT NULL
+          AND TRIM(ac.res_user_addr) = TRIM(cl.zonecode)
     </select>
 </mapper>

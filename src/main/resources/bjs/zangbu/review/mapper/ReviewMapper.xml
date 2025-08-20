@@ -45,7 +45,6 @@
     <resultMap id="ReviewDetailResponseMap" type="bjs.zangbu.review.dto.response.ReviewDetailResponse">
         <id column="reviewId" property="reviewId"/>
         <result column="buildingId" property="buildingId"/>
-        <result column="complexId" property="complexId"/>
         <result column="reviewerNickname" property="reviewerNickname"/>
         <result column="rank" property="rank"/>
         <result column="content" property="content"/>
@@ -57,7 +56,6 @@
         SELECT
             review_id          AS reviewId,
             building_id        AS buildingId,
-            complex_id         AS complexId,
             reviewer_nickname  AS reviewerNickname,
             `rank`,
             content,
@@ -75,18 +73,18 @@
         INSERT INTO review
         (building_id,
          member_id,
-         complex_id,
          reviewer_nickname,
          `rank`,
          content,
+         floor,
          created_at)
         VALUES
             (#{buildingId},
              #{memberId},
-             #{complexId},
              #{reviewerNickname},
              #{rank},
              #{content},
+             #{floor},
              NOW())
     </insert>
 

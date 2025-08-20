@@ -14,6 +14,7 @@ import bjs.zangbu.review.mapper.ReviewMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
+import bjs.zangbu.building.mapper.BuildingMapper;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -23,12 +24,14 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
     private final NotificationService notificationService;
     private final ReviewAddressValidationService addressValidationService;
+    private final BuildingMapper buildingMapper;
 
     public ReviewServiceImpl(ReviewMapper reviewMapper, NotificationService notificationService,
-            ReviewAddressValidationService addressValidationService) {
+            ReviewAddressValidationService addressValidationService, BuildingMapper buildingMapper) {
         this.reviewMapper = reviewMapper;
         this.notificationService = notificationService;
         this.addressValidationService = addressValidationService;
+        this.buildingMapper = buildingMapper;
     }
 
     // 날짜 형식 설정
@@ -52,8 +55,10 @@ public class ReviewServiceImpl implements ReviewService {
         // 최신 리뷰 평점 조회
         Integer latestRank = reviewMapper.selectLatestReviewRank(buildingId);
 
+        String buildingName = buildingMapper.selectBuildingNameById(buildingId);
+
         // 최종 결과 조립
-        return new ReviewListResult(total, list, hasNext, latestRank);
+        return new ReviewListResult(total, list, hasNext, latestRank, buildingName);
     }
 
     // 리뷰 상세보기
@@ -79,32 +84,17 @@ public class ReviewServiceImpl implements ReviewService {
             throw new IllegalArgumentException("리뷰 작성에 실패했습니다."); // 400
         }
 
-        // 주소 검증: 사용자가 리뷰를 작성하려는 건물의 주소와 주민등록초본에 기록된 주소가 일치하는지 확인
-        boolean isAddressValid = addressValidationService.validateAddressForReview(userId, req.getBuildingId());
-        if (!isAddressValid) {
-            throw new AddressValidationException("리뷰를 작성할 수 없습니다. 주민등록초본에 기록된 주소와 해당 건물의 주소가 일치하지 않습니다.");
-        }
-
-        // complexId를 요청에서 받거나, buildingId로 조회하여 보정
-        Long complexId = req.getComplexId();
-        if (complexId == null) {
-            complexId = reviewMapper.selectComplexIdByBuildingId(req.getBuildingId());
-        }
-        if (complexId == null) {
-            throw new IllegalArgumentException("리뷰 작성에 실패했습니다.");
-        }
-
         ReviewInsertParam param = new ReviewInsertParam();
         param.setBuildingId(req.getBuildingId());
         param.setMemberId(userId);
-        param.setComplexId(complexId);
         param.setReviewerNickname(nickname);
         param.setRank(req.getRank());
         param.setContent(req.getContent());
+        param.setFloor(req.getFloor());
 
         Long newId;
         try {
-            int result = reviewMapper.insertReview(param);
+            reviewMapper.insertReview(param);
             newId = param.getReviewId();
 
             // ID가 생성되지 않은 경우 임시 ID 사용

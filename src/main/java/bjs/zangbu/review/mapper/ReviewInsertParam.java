@@ -9,8 +9,8 @@ public class ReviewInsertParam {
     private Long reviewId; // 자동 생성된 PK
     private Long buildingId;
     private String memberId;
-    private Long complexId;
     private String reviewerNickname;
     private Integer rank;
     private String content;
+    private String floor;
 }
